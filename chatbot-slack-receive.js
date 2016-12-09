@@ -155,6 +155,7 @@ module.exports = function(RED) {
           chatContext.set('chatId', channelId);
           //chatContext.set('messageId', botMsg.message_id);
           chatContext.set('userId', userId);
+          chatContext.set('subType', botMsg.subtype);
           //chatContext.set('firstName', botMsg.from.first_name);
           //chatContext.set('lastName', botMsg.from.last_name);
           chatContext.set('authorized', isAuthorized);
