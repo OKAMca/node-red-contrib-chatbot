@@ -2,7 +2,6 @@ var _ = require('underscore');
 var WebClient = require('@slack/client').WebClient;
 var moment = require('moment');
 var ChatContext = require('./lib/chat-context');
-var ChatContextStore = require('./lib/chat-context-store');
 var helpers = require('./lib/slack/slack');
 var fs = require('fs');
 var os = require('os');
@@ -139,7 +138,17 @@ module.exports = function(RED) {
           var context = node.context();
           //var isAuthorized = node.config.isAuthorized(username, userId);
           var isAuthorized = true; // fix is authorized
-          var chatContext = ChatContextStore.getOrCreateChatContext(self, chatId);
+
+          // get or create chat id
+          if (context.global != null) {
+            var chatContext = context.global.get('chat:' + channelId);
+            if (chatContext == null) {
+              chatContext = ChatContext(channelId);
+              context.global.set('chat:' + channelId, chatContext);
+            }
+          } else {
+            self.error('Unable to find context().global in Node-RED ');
+          }
 
           // todo store the user
           /*if (!_.isEmpty(username)) {
@@ -172,9 +181,6 @@ module.exports = function(RED) {
                   chat: {
                     id: channelId
                   }
-                },
-                chat: function() {
-                  return ChatContextStore.getChatContext(self, chatId);
                 }
               };
 

@@ -22,7 +22,7 @@ module.exports = function(RED) {
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
 
-      var chatContext = msg.chat();
+      var chatContext = context.global.get('chat:' + chatId);
       if (chatContext == null) {
         node.error('Unable to find a chat context for chatId: ' + chatId);
         return;

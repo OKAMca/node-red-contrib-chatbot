@@ -13,9 +13,10 @@ module.exports = function(RED) {
 
     this.processMessage = function(msg) {
       msg = RED.util.cloneMessage(msg);
+      var context = node.context();
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = msg.chat();
+      var chatContext = context.global.get('chat:' + chatId);
       var rules = node.rules;
       var outputsNumber = (_.isArray(rules) ? rules.length : 0) + 1;
       var output = null;
@@ -101,7 +102,7 @@ module.exports = function(RED) {
   }
 
   RED.nodes.registerType('chatbot-apiai', ChatBotApiAi);
-
+  
   function ApiAiToken(n) {
     RED.nodes.createNode(this, n);
     var self = this;

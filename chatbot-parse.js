@@ -21,7 +21,9 @@ module.exports = function(RED) {
       msg = RED.util.cloneMessage(msg);
       var parseType = this.parseType;
       var parseVariable = this.parseVariable;
-      var chatContext = msg.chat();
+      var context = node.context();
+      var chatId = msg.payload.chatId || (msg.originalMessage && msg.originalMessage.chat.id);
+      var chatContext = context.global.get('chat:' + chatId);
 
       var parsedValue = null;
 

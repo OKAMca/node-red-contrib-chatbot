@@ -9,7 +9,7 @@ module.exports = function(RED) {
       var context = node.context();
       var originalMessage = msg.originalMessage;
       var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var chatContext = msg.chat();
+      var chatContext = context.global.get('chat:' + chatId);
 
       // check
       if (chatContext != null && chatContext.get('authorized')) {

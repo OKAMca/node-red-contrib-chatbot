@@ -5,7 +5,6 @@ var os = require('os');
 var request = require('request').defaults({ encoding: null });
 var SmoochBot = require('./lib/smooch/smooch-bot');
 var ChatContext = require('./lib/chat-context');
-var ChatContextStore = require('./lib/chat-context-store');
 var ChatLog = require('./lib/chat-log');
 var helpers = require('./lib/smooch/helpers');
 var clc = require('cli-color');
@@ -58,7 +57,17 @@ module.exports = function(RED) {
       // todo fix this
       //var isAuthorized = node.config.isAuthorized(username, userId);
       var isAuthorized = true;
-      var chatContext = ChatContextStore.getOrCreateChatContext(self, chatId);
+
+      // get or create chat id
+      if (context.global != null) {
+        var chatContext = context.global.get('chat:' + chatId);
+        if (chatContext == null) {
+          chatContext = ChatContext(chatId);
+          context.global.set('chat:' + chatId, chatContext);
+        }
+      } else {
+        self.error('Unable to find context().global in Node-RED ');
+      }
 
       // decode the message, eventually download stuff
       self.getMessageDetails(botMsg, self.bot)
@@ -84,7 +93,7 @@ module.exports = function(RED) {
               }
             },
             chat: function() {
-              return ChatContextStore.getChatContext(self, chatId);
+              return context.global.get('chat:' + chatId);
             }
           }, self.log)
         })
@@ -319,8 +328,10 @@ module.exports = function(RED) {
         return;
       }
 
+      var context = node.context();
       var track = node.track;
-      var chatContext = msg.chat();
+      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatContext = context.global.get('chat:' + chatId);
 
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here

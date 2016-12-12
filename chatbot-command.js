@@ -12,7 +12,7 @@ module.exports = function(RED) {
       var command = node.command;
       var context = node.context();
       var chatId = utils.getChatId(msg);
-      var chatContext = msg.chat();
+      var chatContext = context.global.get('chat:' + chatId);
 
       var match = command;
       if (_.isEmpty(match)) {
