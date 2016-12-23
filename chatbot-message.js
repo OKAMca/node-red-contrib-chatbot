@@ -29,16 +29,16 @@ module.exports = function(RED) {
 
       if (!_.isEmpty(node.message)) {
         message = node.message;
-      } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload)) {
-        message = msg.payload;
+      } else if (_.isString(msg.chatbot) && !_.isEmpty(msg.chatbot)) {
+        message = msg.chatbot;
       } else if (_.isNumber()) {
-        message = String(msg.payload);
+        message = String(msg.chatbot);
       } else {
         node.error('Empty message');
       }
 
-      // payload
-      msg.payload = {
+      // chatbot
+      msg.chatbot = {
         type: 'message',
         content: emoji.emojify(template(message)),
         chatId: chatId,
@@ -46,14 +46,14 @@ module.exports = function(RED) {
         inbound: false
       };
 
-      msg.payload.options = {};
+      msg.chatbot.options = {};
       // parse mode
       if (!_.isEmpty(parse_mode)) {
-        msg.payload.options.parse_mode = parse_mode;
+        msg.chatbot.options.parse_mode = parse_mode;
       }
       // reply flag
       if (answer) {
-        msg.payload.options.reply_to_message_id = messageId;
+        msg.chatbot.options.reply_to_message_id = messageId;
       }
       // send out reply
       node.send(msg);

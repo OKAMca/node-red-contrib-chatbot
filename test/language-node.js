@@ -16,8 +16,8 @@ describe('Chat language node', function() {
     });
     LanguageBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'hey guido come stai?');
-    assert.equal(RED.node.message().payload.chatId, 42);
+    assert.equal(RED.node.message().chatbot.content, 'hey guido come stai?');
+    assert.equal(RED.node.message().chatbot.chatId, 42);
     assert.equal(RED.node.message(1), null);
   });
 
@@ -32,8 +32,8 @@ describe('Chat language node', function() {
     });
     LanguageBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message(1).payload.content, 'hey guido come stai?');
-    assert.equal(RED.node.message(1).payload.chatId, 42);
+    assert.equal(RED.node.message(1).chatbot.content, 'hey guido come stai?');
+    assert.equal(RED.node.message(1).chatbot.chatId, 42);
     assert.equal(RED.node.message(0), null);
   });
 
@@ -48,8 +48,8 @@ describe('Chat language node', function() {
     });
     LanguageBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message(0).payload.content, '/help');
-    assert.equal(RED.node.message(0).payload.chatId, 42);
+    assert.equal(RED.node.message(0).chatbot.content, '/help');
+    assert.equal(RED.node.message(0).chatbot.chatId, 42);
     assert.equal(RED.node.message(1), null);
   });
 
@@ -64,8 +64,8 @@ describe('Chat language node', function() {
     });
     LanguageBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'how you doing?');
-    assert.equal(RED.node.message().payload.chatId, 42);
+    assert.equal(RED.node.message().chatbot.content, 'how you doing?');
+    assert.equal(RED.node.message().chatbot.chatId, 42);
     assert.equal(RED.node.message(1), null);
   });
 

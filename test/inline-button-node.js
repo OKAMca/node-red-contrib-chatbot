@@ -32,22 +32,22 @@ describe('Chat inline buttons node', function() {
     });
     InlineButtonsBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.type, 'inline-buttons');
-    assert.equal(RED.node.message().payload.content, 'message for the buttons');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.isArray(RED.node.message().payload.buttons);
-    assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
-    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-    assert.equal(RED.node.message().payload.buttons[0].answer, null);
-    assert.equal(RED.node.message().payload.buttons[0].alert, false);
-    assert.equal(RED.node.message().payload.buttons[1].value, 'value 2');
-    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-    assert.equal(RED.node.message().payload.buttons[1].answer, 'the answer 2');
-    assert.equal(RED.node.message().payload.buttons[1].alert, false);
-    assert.equal(RED.node.message().payload.buttons[2].value, 'value 3');
-    assert.equal(RED.node.message().payload.buttons[2].label, 'Value 3');
-    assert.equal(RED.node.message().payload.buttons[2].answer, 'the answer 3');
-    assert.equal(RED.node.message().payload.buttons[2].alert, true);
+    assert.equal(RED.node.message().chatbot.type, 'inline-buttons');
+    assert.equal(RED.node.message().chatbot.content, 'message for the buttons');
+    assert.equal(RED.node.message().chatbot.chatId, 42);
+    assert.isArray(RED.node.message().chatbot.buttons);
+    assert.equal(RED.node.message().chatbot.buttons[0].value, 'value 1');
+    assert.equal(RED.node.message().chatbot.buttons[0].label, 'Value 1');
+    assert.equal(RED.node.message().chatbot.buttons[0].answer, null);
+    assert.equal(RED.node.message().chatbot.buttons[0].alert, false);
+    assert.equal(RED.node.message().chatbot.buttons[1].value, 'value 2');
+    assert.equal(RED.node.message().chatbot.buttons[1].label, 'Value 2');
+    assert.equal(RED.node.message().chatbot.buttons[1].answer, 'the answer 2');
+    assert.equal(RED.node.message().chatbot.buttons[1].alert, false);
+    assert.equal(RED.node.message().chatbot.buttons[2].value, 'value 3');
+    assert.equal(RED.node.message().chatbot.buttons[2].label, 'Value 3');
+    assert.equal(RED.node.message().chatbot.buttons[2].answer, 'the answer 3');
+    assert.equal(RED.node.message().chatbot.buttons[2].alert, true);
 
   });
 
@@ -69,17 +69,17 @@ describe('Chat inline buttons node', function() {
     });
     InlineButtonsBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.type, 'inline-buttons');
-    assert.equal(RED.node.message().payload.content, 'message for the buttons');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.isArray(RED.node.message().payload.buttons);
-    assert.equal(RED.node.message().payload.buttons[0].value, 'value 1');
-    assert.equal(RED.node.message().payload.buttons[0].label, 'Value 1');
-    assert.equal(RED.node.message().payload.buttons[0].answer, 'alert 1');
-    assert.isUndefined(RED.node.message().payload.buttons[0].alert);
-    assert.equal(RED.node.message().payload.buttons[1].label, 'Value 2');
-    assert.equal(RED.node.message().payload.buttons[1].url, 'http://www.javascript-jedi.com');
-    assert.isUndefined(RED.node.message().payload.buttons[1].alert);
+    assert.equal(RED.node.message().chatbot.type, 'inline-buttons');
+    assert.equal(RED.node.message().chatbot.content, 'message for the buttons');
+    assert.equal(RED.node.message().chatbot.chatId, 42);
+    assert.isArray(RED.node.message().chatbot.buttons);
+    assert.equal(RED.node.message().chatbot.buttons[0].value, 'value 1');
+    assert.equal(RED.node.message().chatbot.buttons[0].label, 'Value 1');
+    assert.equal(RED.node.message().chatbot.buttons[0].answer, 'alert 1');
+    assert.isUndefined(RED.node.message().chatbot.buttons[0].alert);
+    assert.equal(RED.node.message().chatbot.buttons[1].label, 'Value 2');
+    assert.equal(RED.node.message().chatbot.buttons[1].url, 'http://www.javascript-jedi.com');
+    assert.isUndefined(RED.node.message().chatbot.buttons[1].alert);
 
 
   });

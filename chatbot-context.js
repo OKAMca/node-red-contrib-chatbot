@@ -20,7 +20,7 @@ module.exports = function(RED) {
       var fieldType = this.fieldType;
       var fieldName = this.fieldName;
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
 
       var chatContext = msg.chat();
       if (chatContext == null) {
@@ -35,7 +35,7 @@ module.exports = function(RED) {
       switch(command) {
 
         case 'get':
-          msg.payload = chatContext.get(fieldName);
+          msg.chatbot = chatContext.get(fieldName);
           node.send(msg);
           break;
 

@@ -31,9 +31,9 @@ module.exports = function(RED) {
         });
       };
 
-      // fix chat id in payload if any
-      if (_.isObject(msg.payload) && msg.payload.chatId != null) {
-        msg.payload.chatId = chatId;
+      // fix chat id in chatbot if any
+      if (_.isObject(msg.chatbot) && msg.chatbot.chatId != null) {
+        msg.chatbot.chatId = chatId;
       }
 
       node.send(msg);

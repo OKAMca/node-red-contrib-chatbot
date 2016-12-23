@@ -18,8 +18,8 @@ module.exports = function(RED) {
       var path = node.filename;
       var name = node.name;
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
+      var messageId = msg.chatbot.messageId || (originalMessage && originalMessage.message_id);
       var content = null;
 
       // check transport compatibility
@@ -30,10 +30,10 @@ module.exports = function(RED) {
 
       if (!_.isEmpty(path)) {
         content = fs.readFileSync(path);
-      } else if (msg.payload instanceof Buffer) {
-        content = msg.payload;
-      } else if (_.isObject(msg.payload) && msg.payload.image instanceof Buffer) {
-        content = msg.payload.image;
+      } else if (msg.chatbot instanceof Buffer) {
+        content = msg.chatbot;
+      } else if (_.isObject(msg.chatbot) && msg.chatbot.image instanceof Buffer) {
+        content = msg.chatbot.image;
       }
 
       // get filename
@@ -47,12 +47,12 @@ module.exports = function(RED) {
       var caption = null;
       if (!_.isEmpty(node.caption)) {
         caption = node.caption;
-      } else if (_.isObject(msg.payload) && _.isString(msg.payload.caption) && !_.isEmpty(msg.payload.caption)) {
-        caption = msg.payload.caption;
+      } else if (_.isObject(msg.chatbot) && _.isString(msg.chatbot.caption) && !_.isEmpty(msg.chatbot.caption)) {
+        caption = msg.chatbot.caption;
       }
 
       // send out the message
-      msg.payload = {
+      msg.chatbot = {
         type: 'photo',
         content: content,
         filename: filename,

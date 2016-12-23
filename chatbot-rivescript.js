@@ -22,14 +22,14 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
       var script = node.script;
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
       var context = node.context();
       var chatContext = msg.chat();
 
-      // exit if payload content is not string
+      // exit if chatbot content is not string
       var content = null;
-      if (msg.payload != null && msg.payload.content != null && _.isString(msg.payload.content)) {
-        content = msg.payload.content;
+      if (msg.chatbot != null && msg.chatbot.content != null && _.isString(msg.chatbot.content)) {
+        content = msg.chatbot.content;
       }
       if (_.isEmpty(content)) {
         return;
@@ -73,7 +73,7 @@ module.exports = function(RED) {
         // clone the object, otherwise side effect
         msg = {
           originalMessage: originalMessage,
-          payload: {content: reply}
+          chatbot: {content: reply}
         };
         node.send([null, msg]);
       } else {
@@ -86,8 +86,8 @@ module.exports = function(RED) {
             chatContext.set('topic', replyVars.topic);
           }
         }
-        // payload
-        msg.payload = reply;
+        // chatbot
+        msg.chatbot = reply;
         // send out reply
         node.send([msg, null]);
       }

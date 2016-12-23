@@ -25,35 +25,35 @@ module.exports = function(RED) {
 
       var parsedValue = null;
 
-      if (_.isObject(msg.payload)) {
+      if (_.isObject(msg.chatbot)) {
         switch (parseType) {
           case 'string':
-            parsedValue = msg.payload.content;
+            parsedValue = msg.chatbot.content;
             break;
           case 'email':
-            parsedValue = extractEmail(msg.payload.content);
+            parsedValue = extractEmail(msg.chatbot.content);
             break;
           case 'location':
-            if (_.isObject(msg.payload.content) && msg.payload.content.latitude && msg.payload.content.longitude) {
-              parsedValue = msg.payload.content;
+            if (_.isObject(msg.chatbot.content) && msg.chatbot.content.latitude && msg.chatbot.content.longitude) {
+              parsedValue = msg.chatbot.content;
             }
             break;
           case 'boolean':
-            if (_.isString(msg.payload.content) && _(yesWords).contains(msg.payload.content.toLowerCase())) {
+            if (_.isString(msg.chatbot.content) && _(yesWords).contains(msg.chatbot.content.toLowerCase())) {
               parsedValue = true;
-            } else if (_.isString(msg.payload.content) && _(noWords).contains(msg.payload.content.toLowerCase())) {
+            } else if (_.isString(msg.chatbot.content) && _(noWords).contains(msg.chatbot.content.toLowerCase())) {
               parsedValue = false;
             }
             break;
           case 'photo':
           case 'audio':
-            if (msg.payload.content instanceof Buffer) {
-              parsedValue = msg.payload.content;
+            if (msg.chatbot.content instanceof Buffer) {
+              parsedValue = msg.chatbot.content;
             }
             break;
           case 'contact':
-            if (_.isObject(msg.payload.content) && msg.payload.content.phone_number != null) {
-              parsedValue = msg.payload.content.phone_number;
+            if (_.isObject(msg.chatbot.content) && msg.chatbot.content.phone_number != null) {
+              parsedValue = msg.chatbot.content.phone_number;
             }
             break;
         }
@@ -64,7 +64,7 @@ module.exports = function(RED) {
         if (chatContext != null) {
           chatContext.set(parseVariable, parsedValue);
         }
-        msg.payload = parsedValue;
+        msg.chatbot = parsedValue;
         node.send([msg, null]);
       } else {
         node.send([null, msg]);

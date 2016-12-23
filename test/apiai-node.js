@@ -143,7 +143,7 @@ describe('Chat Api.ai node', function() {
     RED.node.get().emit('input', msg);
 
     assert.equal(RED.node.message(0).originalMessage.chat.id, '42');
-    assert.equal(RED.node.message(0).payload, 'In which room?');
+    assert.equal(RED.node.message(0).chatbot, 'In which room?');
     assert.isUndefined(RED.node.message(1));
     assert.isUndefined(RED.node.message(2));
 
@@ -174,7 +174,7 @@ describe('Chat Api.ai node', function() {
     assert.isNull(RED.node.message(0));
     assert.isNull(RED.node.message(1));
     assert.equal(RED.node.message(2).originalMessage.chat.id, '42');
-    assert.equal(RED.node.message(2).payload, 'Yes, I am switching the lights');
+    assert.equal(RED.node.message(2).chatbot, 'Yes, I am switching the lights');
 
   });
 

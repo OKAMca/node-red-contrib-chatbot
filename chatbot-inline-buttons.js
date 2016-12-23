@@ -30,22 +30,22 @@ module.exports = function(RED) {
         return;
       }
 
-      // prepare answers, first the config, then payload
+      // prepare answers, first the config, then chatbot
       var answers = null;
       if (_.isArray(node.answers) && !_.isEmpty(node.answers)) {
         answers = node.answers;
-      } else if (_.isObject(msg.payload) && _.isArray(msg.payload.buttons) && !_.isEmpty(msg.payload.buttons)) {
-        answers = msg.payload.buttons;
+      } else if (_.isObject(msg.chatbot) && _.isArray(msg.chatbot.buttons) && !_.isEmpty(msg.chatbot.buttons)) {
+        answers = msg.chatbot.buttons;
       }
-      // prepare the message, first the config, then payload
+      // prepare the message, first the config, then chatbot
       var message = null;
       if (_.isString(node.message) && !_.isEmpty(node.message)) {
         message = node.message;
-      } else if (_.isObject(msg.payload) && _.isString(msg.payload.message) && !_.isEmpty(msg.payload.message)) {
-        message = msg.payload.message;
+      } else if (_.isObject(msg.chatbot) && _.isString(msg.chatbot.message) && !_.isEmpty(msg.chatbot.message)) {
+        message = msg.chatbot.message;
       }
 
-      msg.payload = {
+      msg.chatbot = {
         type: 'inline-buttons',
         content: message != null ? emoji.emojify(template(message)) : null,
         chatId: chatId,

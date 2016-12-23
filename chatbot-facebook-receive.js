@@ -74,11 +74,11 @@ module.exports = function(RED) {
       var isAuthorized = true;
       var chatContext = ChatContextStore.getOrCreateChatContext(self, chatId);
 
-      var payload = null;
+      var chatbot = null;
       // decode the message, eventually download stuff
       self.getMessageDetails(botMsg, self.bot)
         .then(function (obj) {
-          payload = obj;
+          chatbot = obj;
           return helpers.getOrFetchProfile(userId, self.bot)
         })
         .then(function(profile) {
@@ -94,7 +94,7 @@ module.exports = function(RED) {
 
           var chatLog = new ChatLog(chatContext);
           return chatLog.log({
-            payload: payload,
+            chatbot: chatbot,
             originalMessage: {
               transport: 'facebook',
               chat: {
@@ -209,7 +209,7 @@ module.exports = function(RED) {
           switch(attachment.type) {
             case 'image':
               // download the image into a buffer
-              helpers.downloadFile(attachment.payload.url)
+              helpers.downloadFile(attachment.chatbot.url)
                 .then(function(buffer) {
                   resolve({
                     chatId: chatId,
@@ -221,7 +221,7 @@ module.exports = function(RED) {
                   });
                 })
                 .catch(function() {
-                  reject('Unable to download ' + attachment.payload.url);
+                  reject('Unable to download ' + attachment.chatbot.url);
                 });
               break;
 
@@ -231,8 +231,8 @@ module.exports = function(RED) {
                 messageId: messageId,
                 type: 'location',
                 content: {
-                  latitude: attachment.payload.coordinates.lat,
-                  longitude: attachment.payload.coordinates.long
+                  latitude: attachment.chatbot.coordinates.lat,
+                  longitude: attachment.chatbot.coordinates.long
                 },
                 date: moment(botMsg.timestamp),
                 inbound: true
@@ -326,7 +326,7 @@ module.exports = function(RED) {
 
       return new Promise(function(resolve, reject) {
 
-        var type = msg.payload.type;
+        var type = msg.chatbot.type;
         var bot = node.bot;
         var credentials = node.config.credentials;
 
@@ -344,7 +344,7 @@ module.exports = function(RED) {
               method: 'POST',
               json: {
                 recipient: {
-                  id: msg.payload.chatId
+                  id: msg.chatbot.chatId
                 },
                 'sender_action': 'typing_on'
               },
@@ -357,9 +357,9 @@ module.exports = function(RED) {
             // todo error if not location
             // send
             bot.sendMessage(
-              msg.payload.chatId,
+              msg.chatbot.chatId,
               {
-                text: msg.payload.content,
+                text: msg.chatbot.content,
                 quick_replies: [
                   {
                     'content_type': 'location'
@@ -373,18 +373,18 @@ module.exports = function(RED) {
 
           case 'buttons':
             // prepare buttons
-            var quickReplies = _(msg.payload.buttons).map(function(button) {
+            var quickReplies = _(msg.chatbot.buttons).map(function(button) {
               return {
                 content_type: 'text',
                 title: button,
-                payload: button
+                chatbot: button
               };
             });
             // send
             bot.sendMessage(
-              msg.payload.chatId,
+              msg.chatbot.chatId,
               {
-                text: msg.payload.content,
+                text: msg.chatbot.content,
                 quick_replies: quickReplies
               },
               reportError
@@ -393,25 +393,25 @@ module.exports = function(RED) {
 
           case 'message':
             bot.sendMessage(
-              msg.payload.chatId,
+              msg.chatbot.chatId,
               {
-                text: msg.payload.content
+                text: msg.chatbot.content
               },
               reportError
             );
             break;
 
           case 'location':
-            var lat = msg.payload.content.latitude;
-            var lon = msg.payload.content.longitude;
+            var lat = msg.chatbot.content.latitude;
+            var lon = msg.chatbot.content.longitude;
 
             var attachment = {
               'type': 'template',
-              'payload': {
+              'chatbot': {
                 'template_type': 'generic',
                 'elements': {
                   'element': {
-                    'title': !_.isEmpty(msg.payload.place) ? msg.payload.place : 'Position',
+                    'title': !_.isEmpty(msg.chatbot.place) ? msg.chatbot.place : 'Position',
                     'image_url': 'https:\/\/maps.googleapis.com\/maps\/api\/staticmap?size=764x400&center='
                       + lat + ',' + lon + '&zoom=16&markers=' + lat + ',' + lon,
                     'item_url': 'http:\/\/maps.apple.com\/maps?q=' + lat + ',' + lon + '&z=16'
@@ -421,7 +421,7 @@ module.exports = function(RED) {
             };
 
             bot.sendMessage(
-              msg.payload.chatId,
+              msg.chatbot.chatId,
               {
                 attachment: attachment
               },
@@ -430,26 +430,26 @@ module.exports = function(RED) {
             break;
 
           case 'audio':
-            var audio = msg.payload.content;
+            var audio = msg.chatbot.content;
             helpers.uploadBuffer({
-              recipient: msg.payload.chatId,
+              recipient: msg.chatbot.chatId,
               type: 'audio',
               buffer: audio,
               token: credentials.token,
-              filename: msg.payload.filename
+              filename: msg.chatbot.filename
             }).catch(function(err) {
               reject(err);
             });
             break;
 
           case 'photo':
-            var image = msg.payload.content;
+            var image = msg.chatbot.content;
             helpers.uploadBuffer({
-              recipient: msg.payload.chatId,
+              recipient: msg.chatbot.chatId,
               type: 'image',
               buffer: image,
               token: credentials.token,
-              filename: msg.payload.filename
+              filename: msg.chatbot.filename
             }).catch(function(err) {
               reject(err);
             });
@@ -480,8 +480,8 @@ module.exports = function(RED) {
         // exit, it's not from facebook
         return;
       }
-      // check payload
-      var error = utils.hasValidPayload(msg);
+      // check chatbot
+      var error = utils.hasValidchatbot(msg);
       if (error != null) {
         node.error(error);
         return;

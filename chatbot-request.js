@@ -15,8 +15,8 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
 
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
+      var messageId = msg.chatbot.messageId || (originalMessage && originalMessage.message_id);
       var message = node.message;
       var requestType = node.requestType;
       var buttonLabel = node.buttonLabel;
@@ -28,7 +28,7 @@ module.exports = function(RED) {
         return;
       }
 
-      msg.payload = {
+      msg.chatbot = {
         type: 'request',
         requestType: requestType,
         label: buttonLabel,

@@ -12,8 +12,8 @@ describe('Chat action node', function() {
     });
     ActionBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.type, 'action');
-    assert.equal(RED.node.message().payload.waitingType, 'typing');
+    assert.equal(RED.node.message().chatbot.type, 'action');
+    assert.equal(RED.node.message().chatbot.waitingType, 'typing');
   });
 
   it('should be a action message for Slack', function() {
@@ -23,8 +23,8 @@ describe('Chat action node', function() {
     });
     ActionBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.type, 'action');
-    assert.equal(RED.node.message().payload.waitingType, 'typing');
+    assert.equal(RED.node.message().chatbot.type, 'action');
+    assert.equal(RED.node.message().chatbot.waitingType, 'typing');
   });
 
   it('should be not available for Slack anything other than typing', function() {

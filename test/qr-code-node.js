@@ -12,9 +12,9 @@ describe('Chat qr node', function() {
     });
     QRCodeBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.type, 'photo');
-    assert.equal(RED.node.message().payload.inbound, false);
-    assert.instanceOf(RED.node.message().payload.content, Buffer);
+    assert.equal(RED.node.message().chatbot.type, 'photo');
+    assert.equal(RED.node.message().chatbot.inbound, false);
+    assert.instanceOf(RED.node.message().chatbot.content, Buffer);
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
   });
 

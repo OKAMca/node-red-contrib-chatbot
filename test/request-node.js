@@ -14,9 +14,9 @@ describe('Chat request node', function() {
     });
     RequestBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'i am the request');
-    assert.equal(RED.node.message().payload.type, 'request');
-    assert.equal(RED.node.message().payload.requestType, 'location');
+    assert.equal(RED.node.message().chatbot.content, 'i am the request');
+    assert.equal(RED.node.message().chatbot.type, 'request');
+    assert.equal(RED.node.message().chatbot.requestType, 'location');
   });
 
   it('should be a request phone', function() {
@@ -28,9 +28,9 @@ describe('Chat request node', function() {
     });
     RequestBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'i am the request');
-    assert.equal(RED.node.message().payload.type, 'request');
-    assert.equal(RED.node.message().payload.requestType, 'phone-number');
+    assert.equal(RED.node.message().chatbot.content, 'i am the request');
+    assert.equal(RED.node.message().chatbot.type, 'request');
+    assert.equal(RED.node.message().chatbot.requestType, 'phone-number');
   });
 
   it('should be a request phone with emojii', function() {
@@ -42,9 +42,9 @@ describe('Chat request node', function() {
     });
     RequestBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'i am the request ☕️');
-    assert.equal(RED.node.message().payload.type, 'request');
-    assert.equal(RED.node.message().payload.requestType, 'phone-number');
+    assert.equal(RED.node.message().chatbot.content, 'i am the request ☕️');
+    assert.equal(RED.node.message().chatbot.type, 'request');
+    assert.equal(RED.node.message().chatbot.requestType, 'phone-number');
   });
 
 

@@ -85,10 +85,10 @@
 
 <script type="text/x-red" data-help-name="chatbot-ask">
 <p>Present quick alternatives (canned answers) to the users through buttons <em>[Telegram, Facebook, Smooch]</em>.</p>
-<p>The button can be passed through the payload by the upstream node:</p>
+<p>The button can be passed through the chatbot by the upstream node:</p>
 <br/>
 <pre>
-msg.payload = {
+msg.chatbot = {
   message: 'The message with the buttons',
   buttons: [
     {value: 'text 1', label: 'label of the button 1'},

@@ -14,9 +14,9 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
 
       // exit if not string
-      if (_.isString(msg.payload.content)) {
-        msg.analysis = speak.classify(msg.payload.content);
-        var matchLanguage = lngDetector.detect(msg.payload.content, 2);
+      if (_.isString(msg.chatbot.content)) {
+        msg.analysis = speak.classify(msg.chatbot.content);
+        var matchLanguage = lngDetector.detect(msg.chatbot.content, 2);
         msg.analysis.language = _.isArray(matchLanguage) && !_.isEmpty(matchLanguage) ? matchLanguage[0][0] : null;
       }
 

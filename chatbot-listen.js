@@ -90,15 +90,15 @@ module.exports = function(RED) {
     this.on('input', function(msg) {
       var sentences = node.sentences;
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
       var context = node.context();
       var chatContext = msg.chat();
 
       // exit if not string
-      if (!_.isString(msg.payload.content)) {
+      if (!_.isString(msg.chatbot.content)) {
         return;
       }
-      debug && console.log('Searching match for ', msg.payload.content);
+      debug && console.log('Searching match for ', msg.chatbot.content);
 
       // see if one of the rules matches
       var matched = null;
@@ -108,9 +108,9 @@ module.exports = function(RED) {
         matched = _(sentences).any(function (sentence) {
           // check if valid json
           var words = sentence.split(',');
-          debug && console.log('---- START analysis ' + msg.payload.content);
+          debug && console.log('---- START analysis ' + msg.chatbot.content);
           // analize sentence
-          var analysis = speak.classify(msg.payload.content);
+          var analysis = speak.classify(msg.chatbot.content);
           // send message if the sentence is matched, otherwise stop here
           return matchSentence(analysis, words, chatContext);
         });

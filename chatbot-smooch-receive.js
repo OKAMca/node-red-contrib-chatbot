@@ -62,7 +62,7 @@ module.exports = function(RED) {
 
       // decode the message, eventually download stuff
       self.getMessageDetails(botMsg, self.bot)
-        .then(function(payload) {
+        .then(function(chatbot) {
           // store some information
           chatContext.set('chatId', chatId);
           chatContext.set('messageId', messageId);
@@ -76,7 +76,7 @@ module.exports = function(RED) {
           var chatLog = new ChatLog(chatContext);
 
           return chatLog.log({
-            payload: payload,
+            chatbot: chatbot,
             originalMessage: {
               transport: 'smooch',
               chat: {
@@ -257,7 +257,7 @@ module.exports = function(RED) {
 
       return new Promise(function(resolve, reject) {
 
-        var type = msg.payload.type;
+        var type = msg.chatbot.type;
         var bot = node.bot;
         var credentials = node.config.credentials;
 
@@ -275,16 +275,16 @@ module.exports = function(RED) {
             break;
 
           case 'message':
-            bot.sendMessage(msg.payload.chatId, msg.payload.content, reportError);
+            bot.sendMessage(msg.chatbot.chatId, msg.chatbot.content, reportError);
             break;
 
           case 'buttons':
-            return bot.sendActions(msg.payload.chatId, msg.payload.content, msg.payload.buttons);
+            return bot.sendActions(msg.chatbot.chatId, msg.chatbot.content, msg.chatbot.buttons);
             break;
 
           case 'photo':
-            var image = msg.payload.content;
-            bot.uploadBuffer(msg.payload.chatId, image)
+            var image = msg.chatbot.content;
+            bot.uploadBuffer(msg.chatbot.chatId, image)
               .catch(function(err) {
                 reject(err);
               })

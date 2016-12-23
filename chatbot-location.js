@@ -19,13 +19,13 @@ module.exports = function(RED) {
       var longitude = node.longitude;
       var place = node.place;
 
-      if (_.isObject(msg.payload) && _.isNumber(msg.payload.latitude) && _.isNumber(msg.payload.longitude)) {
-        latitude = msg.payload.latitude;
-        longitude = msg.payload.longitude;
+      if (_.isObject(msg.chatbot) && _.isNumber(msg.chatbot.latitude) && _.isNumber(msg.chatbot.longitude)) {
+        latitude = msg.chatbot.latitude;
+        longitude = msg.chatbot.longitude;
       }
 
       // send out the message
-      msg.payload = {
+      msg.chatbot = {
         type: 'location',
         content: {
           latitude: latitude,

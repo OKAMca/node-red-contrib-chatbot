@@ -44,10 +44,10 @@ Now you have a useful bot that answers *"Hi there!"* to any received message. We
 ## Available nodes
 
 ### Object nodes
-* **Audio**: takes the `msg.payload` binary (or a local file) and sends out as audio to the chat, can track response
+* **Audio**: takes the `msg.chatbot` binary (or a local file) and sends out as audio to the chat, can track response
 * **Buttons**: request information to the chat user using buttons using a predefined list
 * **Debug**: Debug incoming messages and chat contexts (useful to get the `chatId`)
-* **Image**: takes the `msg.payload` binary (or a local file) and sends out as image to the chat, can track response
+* **Image**: takes the `msg.chatbot` binary (or a local file) and sends out as image to the chat, can track response
 * **Log**: Convert a chat message (inbound or outbound) to a single line string suitable to be sent to a log file
 * **Location**: Send a location type message that will be shown with a map by the chat client
 * **Message**: sends a text message from the chat bot, supports templating (variable like `{{firstName}}`, etc), tracking of response and quoting a previous comment  [All]
@@ -101,7 +101,7 @@ Here are some examples connecting the ChatBot blocks
 ![Example Message](./docs/images/example-message.png)
 The first node `/hi` listen the incoming messages for the string *"/hi"*, if it finds it pass through the outpin otherwise nothing.
 
-The second node `Hi!` simply outputs a message using the templating `Hi {{username}}!`, the message node just prepares the payload for the message, the node `Telegram Sender` actually sends out the message.
+The second node `Hi!` simply outputs a message using the templating `Hi {{username}}!`, the message node just prepares the chatbot for the message, the node `Telegram Sender` actually sends out the message.
 
 The node `Telegram Receiver` sets up some variables in the chat context flow: *firstName*, *lastName*, *chatId* , *username*, *transport*, *messageId*.
 *Note*: username is only available in Telegram if it's specified in the chat settings.
@@ -110,7 +110,7 @@ The node `Telegram Receiver` sets up some variables in the chat context flow: *f
 ![Example Collect Email](./docs/images/example-collect-email.png)
 This is an example of how to parse the user input. The first **Email** block after the receiver just show a prompt message, note that the sender block tracks the user answer, that means that next message from the user will start from here and will be re-routed to the output to the `Telegram Sender` node.
 
-If a valid email is found then the parsed value will be routed to the first output otherwise the second. The parsed email is available as payload or can be stored in the flow context,  for example in the `email` variable.
+If a valid email is found then the parsed value will be routed to the first output otherwise the second. The parsed email is available as chatbot or can be stored in the flow context,  for example in the `email` variable.
 
 The **Show Email** is just a simple message block that uses templating to show variables store in flow context (or global): `Your email is {{email}}`
 ### Authorized Users
@@ -122,12 +122,12 @@ The node `Authorized?` sends the message through the first output is the user is
 ### Send Image
 ![Authorized Users](./docs/images/example-image.png)
 This example respons to a command `/cam` in the chat sending an image.
-The first node `/cam` triggers an http request (for example to the URL of a web cam), then resulting payload is sent to the `Image` node which prepares the payload for the `Telegram Sender` node.
+The first node `/cam` triggers an http request (for example to the URL of a web cam), then resulting chatbot is sent to the `Image` node which prepares the chatbot for the `Telegram Sender` node.
 The **/cam** command also triggers a waiting message *"Uploading a photo..."* while the image is downloaded.
 
 ### Log Chats
 ![Authorized Users](./docs/images/example-log.png)
-The Log node takes a message payload (inbound or outbound) and trasforms it in a string suitable to be appended to a log file.
+The Log node takes a message chatbot (inbound or outbound) and trasforms it in a string suitable to be appended to a log file.
 
 ```
 196520947 [Guidone72] > Thu Jun 30 2016 18:46:31 GMT+0200 - /help
@@ -158,14 +158,14 @@ The `Listen Node` also takes into account small changes to the word (using  Leve
 
 There are some special tokes like `{{email}}` that matches any token that looks like and email and store it the chat context (in that case the key will be "email").
 
-A little bit of coding is required to prepare the payload for the email node
+A little bit of coding is required to prepare the chatbot for the email node
 
 ```
 // get the chat context
 var chat = msg.chat();
-// email payload
+// email chatbot
 msg.to = chat.get('email');
-msg.payload = 'Hi, this is my curriculum vitae';
+msg.chatbot = 'Hi, this is my curriculum vitae';
 msg.attachments = [
   {
    filename: 'my_cv.pdf',
@@ -287,7 +287,7 @@ The `Function node` looks like
 ```
 console.log(msg);
 var chat = msg.chat();
-msg.payload = 'This is a special message ' + chat.get('firstName');
+msg.chatbot = 'This is a special message ' + chat.get('firstName');
 ```
 This only works if the message parameter is left blank.
 
@@ -298,7 +298,7 @@ It's important to understand how RedBot keeps track of the current conversation,
   originalMessage: {
     ...
   },
-  payload: {
+  chatbot: {
     type: 'text',
     ...
   }
@@ -306,30 +306,30 @@ It's important to understand how RedBot keeps track of the current conversation,
 ```
 
 This is how **Node-RED** works: for every incoming event a message (the *msg* object) is generated and it's sent across the flow based on the wiring.
-The **payload** key contains the real content of the message (could be a incoming text message or a buffer for an image, etc) while the **originalMessage** contains the tracking of the conversation.
+The **chatbot** key contains the real content of the message (could be a incoming text message or a buffer for an image, etc) while the **originalMessage** contains the tracking of the conversation.
 
-Inside a **Function node** you're free to modify the payload of a message and everything will still work as long as the originalMessage is kept intact and passed through the next node.
+Inside a **Function node** you're free to modify the chatbot of a message and everything will still work as long as the originalMessage is kept intact and passed through the next node.
 
 For every message node it's possible to prepare the message in the upstream node, for an image for example
 
 ![Prepare text in upstream node](./docs/images/example-programmatically-image.png)
 
-Here the `File node` puts the loaded file into the payload as a Buffer (keeping the rest of the *msg* object intact), the Image node reads it and prepare the proper payload for the sender node.
+Here the `File node` puts the loaded file into the chatbot as a Buffer (keeping the rest of the *msg* object intact), the Image node reads it and prepare the proper chatbot for the sender node.
 
 Generally every message node (like Text, Image, etc) should be wired to a sender.
 
-**So the key concept is that every node in Node-RED should preserve the msg object, change its payload as needed and passed through the next node.**
+**So the key concept is that every node in Node-RED should preserve the msg object, change its chatbot as needed and passed through the next node.**
 
  Keep in mind that if a Function node make some changes to a *msg* object **and has a sibling** (another node is connected to the same upstream node), the message node must be cloned
 
 ```
 var cloned = RED.util.cloneMessage(msg);
-cloned.payload = 'My payload';
+cloned.chatbot = 'My chatbot';
 return cloned;
 ```
 
 The reason is that **Node-RED** is asynchronous and single threaded, the *msg* object sent to the sibling nodes is the very same instance.
-It's not possible to tell which node will be executed first, so if the first executed node changes the *msg* object , the second one will receive a different payload causing unwanted side effects very difficult to track down.
+It's not possible to tell which node will be executed first, so if the first executed node changes the *msg* object , the second one will receive a different chatbot causing unwanted side effects very difficult to track down.
 
 ## Changelog
 

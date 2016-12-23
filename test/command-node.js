@@ -12,7 +12,7 @@ describe('Chat command node', function() {
     });
     CommandBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, '/start');
+    assert.equal(RED.node.message().chatbot.content, '/start');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
   });
 
@@ -33,7 +33,7 @@ describe('Chat command node', function() {
     });
     CommandBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, '/test@guidone');
+    assert.equal(RED.node.message().chatbot.content, '/test@guidone');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
   });
 
@@ -44,7 +44,7 @@ describe('Chat command node', function() {
     });
     CommandBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, '/test sun trees');
+    assert.equal(RED.node.message().chatbot.content, '/test sun trees');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
     assert.equal(msg.chat().get('param1'), 'sun');
     assert.equal(msg.chat().get('param2'), 'trees');

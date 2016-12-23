@@ -33,7 +33,7 @@ module.exports = function() {
       }
     },
 
-    createMessage: function(payload, transport) {
+    createMessage: function(chatbot, transport) {
       var chatId = 42;
       // create a chat context if doesn't exists
       //var context = ChatContextStore.getOrCreateChatContext(null, chatId);
@@ -48,14 +48,14 @@ module.exports = function() {
         chat: function() {
           return ChatContextStore.getChatContext(null, chatId);
         },
-        payload: payload != null ? payload : 'I am the original message'
+        chatbot: chatbot != null ? chatbot : 'I am the original message'
       };
       _chatContext = ChatContext(chatId);
       _chatContext.clear();
       // store it
       ChatContextStore.set(chatId, _chatContext);
-      if (payload != null) {
-        msg.payload = payload;
+      if (chatbot != null) {
+        msg.chatbot = chatbot;
       }
       return msg;
     },

@@ -13,7 +13,7 @@ describe('Chat RiveScript node', function() {
     });
     RiveScriptBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload, 'Hello, human!');
+    assert.equal(RED.node.message().chatbot, 'Hello, human!');
   });
 
   it('should not answer to useless sentence', function() {
@@ -25,7 +25,7 @@ describe('Chat RiveScript node', function() {
     RiveScriptBlock(RED);
     RED.node.get().emit('input', msg);
     assert.equal(RED.node.message(), null);
-    assert.equal(RED.node.message(1).payload.content, 'ERR: No Reply Matched');
+    assert.equal(RED.node.message(1).chatbot.content, 'ERR: No Reply Matched');
   });
 
   it('should grab the name and store it', function() {
@@ -37,7 +37,7 @@ describe('Chat RiveScript node', function() {
     RED.environment.chat(msg.originalMessage.chat.id, {});
     RiveScriptBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload, 'ok, I will ll remember your name as Guido');
+    assert.equal(RED.node.message().chatbot, 'ok, I will ll remember your name as Guido');
     assert.equal(RED.node.context().chat.get('name'), 'Guido');
   });
 
@@ -50,7 +50,7 @@ describe('Chat RiveScript node', function() {
     RED.environment.chat(msg.originalMessage.chat.id, {name: 'guido'});
     RiveScriptBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload, 'your name is guido');
+    assert.equal(RED.node.message().chatbot, 'your name is guido');
     assert.equal(RED.node.context().chat.get('name'), 'guido');
   });
 
@@ -64,10 +64,10 @@ describe('Chat RiveScript node', function() {
     RED.environment.chat(msg.originalMessage.chat.id, {name: 'guido'});
     RiveScriptBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload, 'What color is it?');
+    assert.equal(RED.node.message().chatbot, 'What color is it?');
     var followup = RED.createMessage({content: 'red'});
     RED.node.get().emit('input', followup);
-    assert.equal(RED.node.message().payload, 'That\'s a silly color for a dog!');
+    assert.equal(RED.node.message().chatbot, 'That\'s a silly color for a dog!');
   });
 
 

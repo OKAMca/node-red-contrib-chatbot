@@ -17,8 +17,8 @@ module.exports = function(RED) {
       var path = node.filename;
       var name = node.name;
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
+      var messageId = msg.chatbot.messageId || (originalMessage && originalMessage.message_id);
 
       // check transport compatibility
       if (msg.originalMessage.transport != null && !_.contains(node.transports, msg.originalMessage.transport)) {
@@ -27,7 +27,7 @@ module.exports = function(RED) {
       }
 
       // todo make asynch here
-      var content = msg.payload;
+      var content = msg.chatbot;
       if (!_.isEmpty(path)) {
         content = fs.readFileSync(path);
       }
@@ -41,7 +41,7 @@ module.exports = function(RED) {
       }
 
       // send out the message
-      msg.payload = {
+      msg.chatbot = {
         type: 'audio',
         content: content,
         filename: filename,

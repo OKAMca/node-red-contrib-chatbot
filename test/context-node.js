@@ -17,7 +17,7 @@ describe('Chat context node', function() {
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload, 42);
+    assert.equal(RED.node.message().chatbot, 42);
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
   });
 
@@ -33,7 +33,7 @@ describe('Chat context node', function() {
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am a useless message');
+    assert.equal(RED.node.message().chatbot.content, 'I am a useless message');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
     assert.equal(msg.chat().get('chatId'), undefined);
   });
@@ -52,7 +52,7 @@ describe('Chat context node', function() {
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am a useless message');
+    assert.equal(RED.node.message().chatbot.content, 'I am a useless message');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
     assert.equal(msg.chat().get('myValue'), 'I am a string value');
   });
@@ -71,7 +71,7 @@ describe('Chat context node', function() {
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am a useless message');
+    assert.equal(RED.node.message().chatbot.content, 'I am a useless message');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
     assert.equal(msg.chat().get('myValue'), 4242);
   });
@@ -90,7 +90,7 @@ describe('Chat context node', function() {
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am a useless message');
+    assert.equal(RED.node.message().chatbot.content, 'I am a useless message');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
     assert.equal(msg.chat().get('myValue'), true);
   });
@@ -109,7 +109,7 @@ describe('Chat context node', function() {
     });
     ContextBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am a useless message');
+    assert.equal(RED.node.message().chatbot.content, 'I am a useless message');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
     assert.equal(msg.chat().get('myValue').key_1, 42);
     assert.equal(msg.chat().get('myValue').key_2, 'yes');

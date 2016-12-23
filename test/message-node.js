@@ -14,9 +14,9 @@ describe('Chat message node', function() {
     });
     MessageBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'i am the message');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.equal(RED.node.message().payload.inbound, false);
+    assert.equal(RED.node.message().chatbot.content, 'i am the message');
+    assert.equal(RED.node.message().chatbot.chatId, 42);
+    assert.equal(RED.node.message().chatbot.inbound, false);
   });
 
   it('should send the message in the config (slack)', function() {
@@ -28,9 +28,9 @@ describe('Chat message node', function() {
     });
     MessageBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'i am the message');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.equal(RED.node.message().payload.inbound, false);
+    assert.equal(RED.node.message().chatbot.content, 'i am the message');
+    assert.equal(RED.node.message().chatbot.chatId, 42);
+    assert.equal(RED.node.message().chatbot.inbound, false);
   });
 
   it('should not send for an unknown platform', function() {
@@ -55,9 +55,9 @@ describe('Chat message node', function() {
     });
     MessageBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am the original message');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.equal(RED.node.message().payload.inbound, false);
+    assert.equal(RED.node.message().chatbot.content, 'I am the original message');
+    assert.equal(RED.node.message().chatbot.chatId, 42);
+    assert.equal(RED.node.message().chatbot.inbound, false);
   });
 
   it('should answer to previous message', function() {
@@ -69,9 +69,9 @@ describe('Chat message node', function() {
     });
     MessageBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I am the original message');
-    assert.equal(RED.node.message().payload.chatId, 42);
-    assert.equal(RED.node.message().payload.options.reply_to_message_id, 72);
+    assert.equal(RED.node.message().chatbot.content, 'I am the original message');
+    assert.equal(RED.node.message().chatbot.chatId, 42);
+    assert.equal(RED.node.message().chatbot.options.reply_to_message_id, 72);
   });
 
   it('should send a message using template', function() {
@@ -84,8 +84,8 @@ describe('Chat message node', function() {
     MessageBlock(RED);
     RED.node.context().flow.set('name', 'Guidone');
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'send message to Guidone using template');
-    assert.equal(RED.node.message().payload.chatId, 42);
+    assert.equal(RED.node.message().chatbot.content, 'send message to Guidone using template');
+    assert.equal(RED.node.message().chatbot.chatId, 42);
   });
 
   it('should compose a message using user defined variable in context', function() {
@@ -104,8 +104,8 @@ describe('Chat message node', function() {
     MessageBlock(RED);
     RED.node.context().flow.set('name', 'Guidone');
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'The number is 24 snd the name is Javascript Jedi');
-    assert.equal(RED.node.message().payload.chatId, 42);
+    assert.equal(RED.node.message().chatbot.content, 'The number is 24 snd the name is Javascript Jedi');
+    assert.equal(RED.node.message().chatbot.chatId, 42);
   });
 
 
@@ -119,8 +119,8 @@ describe('Chat message node', function() {
     });
     MessageBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'this is *bold*');
-    assert.equal(RED.node.message().payload.options.parse_mode, 'Markdown');
+    assert.equal(RED.node.message().chatbot.content, 'this is *bold*');
+    assert.equal(RED.node.message().chatbot.options.parse_mode, 'Markdown');
   });
 
   it('should convert a emojii in unicode', function() {
@@ -132,7 +132,7 @@ describe('Chat message node', function() {
     });
     MessageBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'I ❤️ ☕️!');
+    assert.equal(RED.node.message().chatbot.content, 'I ❤️ ☕️!');
   });
 
 });

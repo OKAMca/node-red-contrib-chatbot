@@ -162,10 +162,10 @@ module.exports = function(RED) {
 
           // decode the message, eventually download stuff
           getMessageDetails(botMsg, node.rtm._token)
-            .then(function(payload) {
+            .then(function(chatbot) {
 
               var msg = {
-                payload: payload,
+                chatbot: chatbot,
                 originalMessage: {
                   transport: 'slack',
                   chat: {
@@ -230,23 +230,23 @@ module.exports = function(RED) {
 
       return new Promise(function(resolve, reject) {
 
-        var type = msg.payload.type;
+        var type = msg.chatbot.type;
         var rtm = node.rtm;
         var slackAPI = new WebClient(rtm._token);
 
         switch (type) {
           case 'action':
-            rtm.sendTyping(msg.payload.chatId);
+            rtm.sendTyping(msg.chatbot.chatId);
             break;
 
           case 'message':
-            rtm.sendMessage(msg.payload.content, msg.payload.chatId);
+            rtm.sendMessage(msg.chatbot.content, msg.chatbot.chatId);
             break;
 
           case 'location':
             // build link
-            var link = 'https://www.google.com/maps?f=q&q=' + msg.payload.content.latitude + ','
-              + msg.payload.content.longitude + '&z=16';
+            var link = 'https://www.google.com/maps?f=q&q=' + msg.chatbot.content.latitude + ','
+              + msg.chatbot.content.longitude + '&z=16';
             // send simple attachment
             var attachments = [
               {
@@ -256,13 +256,13 @@ module.exports = function(RED) {
                 'color': '#7CD197'
               }
             ];
-            slackAPI.chat.postMessage(msg.payload.chatId, '', {attachments: attachments});
+            slackAPI.chat.postMessage(msg.chatbot.chatId, '', {attachments: attachments});
             break;
 
           case 'photo':
 
-            var filename = msg.payload.filename || 'tmp-image-file';
-            var image = msg.payload.content;
+            var filename = msg.chatbot.filename || 'tmp-image-file';
+            var image = msg.chatbot.content;
             var tmpFile = os.tmpdir() + '/' + filename;
 
             // write to filesystem to use stream
@@ -276,7 +276,7 @@ module.exports = function(RED) {
                   {
                     file: fs.createReadStream(tmpFile),
                     filetype: 'auto',
-                    channels: msg.payload.chatId
+                    channels: msg.chatbot.chatId
                   }, function handleContentFileUpload(err, res) {
                   }
                 );
@@ -295,25 +295,25 @@ module.exports = function(RED) {
 
     this.on('input', function (msg) {
 
-      if (msg.payload == null) {
-        node.warn("msg.payload is empty");
+      if (msg.chatbot == null) {
+        node.warn("msg.chatbot is empty");
         return;
       }
-      if (msg.payload.chatId == null) {
-        node.warn("msg.payload.channelId is empty");
+      if (msg.chatbot.chatId == null) {
+        node.warn("msg.chatbot.channelId is empty");
         return;
       }
-      if (msg.payload.type == null) {
-        node.warn("msg.payload.type is empty");
+      if (msg.chatbot.type == null) {
+        node.warn("msg.chatbot.type is empty");
         return;
       }
 
-      var channelId = msg.payload.chatId;
+      var channelId = msg.chatbot.chatId;
 
       var noop = function() {};
 
-      /*if (msg.payload.content == null) {
-       node.warn("msg.payload.content is empty");
+      /*if (msg.chatbot.content == null) {
+       node.warn("msg.chatbot.content is empty");
        return;
        }*/
 

@@ -24,8 +24,8 @@ module.exports = function(RED) {
         match = '/' + match;
       }
       // split command
-      if (msg.payload != null && _.isString(msg.payload.content)) {
-        var commands = msg.payload.content.split(' ');
+      if (msg.chatbot != null && _.isString(msg.chatbot.content)) {
+        var commands = msg.chatbot.content.split(' ');
         // check
         if (commands[0].replace(/(@.*?)$/, '') == match) {
           // store parameters in chat context

@@ -190,10 +190,10 @@ module.exports = function(RED) {
 
       // decode the message
       self.getMessageDetails(botMsg)
-        .then(function(payload) {
+        .then(function(chatbot) {
           var chatLog = new ChatLog(chatContext);
           return chatLog.log({
-            payload: payload,
+            chatbot: chatbot,
             originalMessage: botMsg,
             chat: function() {
               return ChatContextStore.getChatContext(self, chatId);
@@ -345,25 +345,25 @@ module.exports = function(RED) {
         return;
       }
 
-      if (msg.payload == null) {
-        node.warn("msg.payload is empty");
+      if (msg.chatbot == null) {
+        node.warn("msg.chatbot is empty");
         return;
       }
-      if (msg.payload.chatId == null) {
-        node.warn("msg.payload.chatId is empty");
+      if (msg.chatbot.chatId == null) {
+        node.warn("msg.chatbot.chatId is empty");
         return;
       }
-      if (msg.payload.type == null) {
-        node.warn("msg.payload.type is empty");
+      if (msg.chatbot.type == null) {
+        node.warn("msg.chatbot.type is empty");
         return;
       }
 
       //var context = node.context();
       var buttons = null;
       var track = node.track;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
       var chatContext = msg.chat();
-      var type = msg.payload.type;
+      var type = msg.chatbot.type;
 
       // check if this node has some wirings in the follow up pin, in that case
       // the next message should be redirected here
@@ -379,58 +379,58 @@ module.exports = function(RED) {
 
           switch (type) {
             case 'message':
-              node.telegramBot.sendMessage(chatId, msg.payload.content, msg.payload.options)
+              node.telegramBot.sendMessage(chatId, msg.chatbot.content, msg.chatbot.options)
                 .catch(node.error);
               break;
             case 'photo':
-              node.telegramBot.sendPhoto(chatId, msg.payload.content, {
-                caption: msg.payload.caption
+              node.telegramBot.sendPhoto(chatId, msg.chatbot.content, {
+                caption: msg.chatbot.caption
               }).catch(node.error);
               break;
             case 'document':
-              node.telegramBot.sendDocument(chatId, msg.payload.content, msg.payload.options)
+              node.telegramBot.sendDocument(chatId, msg.chatbot.content, msg.chatbot.options)
                 .catch(node.error);
               break;
             case 'sticker':
-              node.telegramBot.sendSticker(chatId, msg.payload.content, msg.payload.options)
+              node.telegramBot.sendSticker(chatId, msg.chatbot.content, msg.chatbot.options)
                 .catch(node.error);
               break;
             case 'video':
-              node.telegramBot.sendVideo(chatId, msg.payload.content, msg.payload.options)
+              node.telegramBot.sendVideo(chatId, msg.chatbot.content, msg.chatbot.options)
                 .catch(node.error);
               break;
             case 'audio':
-              node.telegramBot.sendVoice(chatId, msg.payload.content, msg.payload.options)
+              node.telegramBot.sendVoice(chatId, msg.chatbot.content, msg.chatbot.options)
                 .catch(node.error);
               break;
             case 'location':
-              node.telegramBot.sendLocation(chatId, msg.payload.content.latitude, msg.payload.content.longitude, msg.payload.options)
+              node.telegramBot.sendLocation(chatId, msg.chatbot.content.latitude, msg.chatbot.content.longitude, msg.chatbot.options)
                 .catch(node.error);
               break;
             case 'action':
-              node.telegramBot.sendChatAction(chatId, msg.payload.waitingType != null ? msg.payload.waitingType : 'typing')
+              node.telegramBot.sendChatAction(chatId, msg.chatbot.waitingType != null ? msg.chatbot.waitingType : 'typing')
                 .catch(node.error);
               break;
             case 'request':
               var keyboard = null;
-              if (msg.payload.requestType === 'location') {
+              if (msg.chatbot.requestType === 'location') {
                 keyboard = [
                   [{
-                    text: !_.isEmpty(msg.payload.buttonLabel) ? msg.payload.buttonLabel : 'Send your position',
+                    text: !_.isEmpty(msg.chatbot.buttonLabel) ? msg.chatbot.buttonLabel : 'Send your position',
                     request_location: true
                   }]
                 ];
-              } else if (msg.payload.requestType === 'phone-number') {
+              } else if (msg.chatbot.requestType === 'phone-number') {
                 keyboard = [
                   [{
-                    text: !_.isEmpty(msg.payload.buttonLabel) ? msg.payload.buttonLabel : 'Send your phone number',
+                    text: !_.isEmpty(msg.chatbot.buttonLabel) ? msg.chatbot.buttonLabel : 'Send your phone number',
                     request_contact: true
                   }]
                 ];
               }
               if (keyboard != null) {
                 node.telegramBot
-                  .sendMessage(chatId, msg.payload.content, {
+                  .sendMessage(chatId, msg.chatbot.content, {
                     reply_markup: JSON.stringify({
                       keyboard: keyboard,
                       'resize_keyboard': true,
@@ -447,7 +447,7 @@ module.exports = function(RED) {
               // create the first array of array
               var inlineKeyboard = [[]];
               // cycle through buttons, add new line at the end if flag
-              _(msg.payload.buttons).each(function(button) {
+              _(msg.chatbot.buttons).each(function(button) {
                 var json = null;
                 if (!_.isEmpty(button.url)) {
                   json = {
@@ -476,22 +476,22 @@ module.exports = function(RED) {
               if (node.telegramBot.lastInlineButtons == null) {
                 node.telegramBot.lastInlineButtons = {};
               }
-              node.telegramBot.lastInlineButtons[chatId] = msg.payload.buttons;
+              node.telegramBot.lastInlineButtons[chatId] = msg.chatbot.buttons;
               // finally send
-              node.telegramBot.sendMessage(chatId, msg.payload.content, {
+              node.telegramBot.sendMessage(chatId, msg.chatbot.content, {
                 reply_markup: JSON.stringify({
                   inline_keyboard: inlineKeyboard
                 })
               }).catch(node.error);
               break;
             case 'buttons':
-              if (_.isEmpty(msg.payload.content)) {
+              if (_.isEmpty(msg.chatbot.content)) {
                 node.error('Buttons node needs a non-empty message');
                 return;
               }
               buttons = {
                 reply_markup: JSON.stringify({
-                  keyboard: _(msg.payload.buttons).map(function(button) {
+                  keyboard: _(msg.chatbot.buttons).map(function(button) {
                     return [button.value];
                   }),
                   resize_keyboard: true,
@@ -501,7 +501,7 @@ module.exports = function(RED) {
               // finally send
               node.telegramBot.sendMessage(
                 chatId,
-                msg.payload.content,
+                msg.chatbot.content,
                 buttons
               ).catch(node.error);
               break;

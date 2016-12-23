@@ -13,9 +13,9 @@ describe('Chat request node', function() {
     });
     LocationBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.isObject(RED.node.message().payload.content, 'is an object');
-    assert.equal(RED.node.message().payload.content.latitude, '45.4842045');
-    assert.equal(RED.node.message().payload.content.longitude, '9.1809077');
+    assert.isObject(RED.node.message().chatbot.content, 'is an object');
+    assert.equal(RED.node.message().chatbot.content.latitude, '45.4842045');
+    assert.equal(RED.node.message().chatbot.content.longitude, '9.1809077');
   });
 
   it('should send a location message in Slack', function() {
@@ -26,9 +26,9 @@ describe('Chat request node', function() {
     });
     LocationBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.isObject(RED.node.message().payload.content, 'is an object');
-    assert.equal(RED.node.message().payload.content.latitude, '45.4842045');
-    assert.equal(RED.node.message().payload.content.longitude, '9.1809077');
+    assert.isObject(RED.node.message().chatbot.content, 'is an object');
+    assert.equal(RED.node.message().chatbot.content.latitude, '45.4842045');
+    assert.equal(RED.node.message().chatbot.content.longitude, '9.1809077');
   });
 
 });

@@ -18,7 +18,7 @@ module.exports = function(RED) {
       //var context = node.context();
       //var transport = msg.originalMessage != null && msg.originalMessage.transport != null ? msg.originalMessage.transport : null;
 
-      //var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      //var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
       if (_.isFunction(msg.chat)) {
         var chatContext = msg.chat();
 
@@ -39,10 +39,10 @@ module.exports = function(RED) {
         // normal message here
         console.log('');
         console.log(grey('------ Message ----------------'));
-        if (_.isString(msg.payload)) {
-          console.log(msg.payload);
+        if (_.isString(msg.chatbot)) {
+          console.log(msg.chatbot);
         } else {
-          console.log(JSON.stringify(msg.payload));
+          console.log(JSON.stringify(msg.chatbot));
         }
 
       }

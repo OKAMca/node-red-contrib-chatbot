@@ -8,7 +8,7 @@ module.exports = function(RED) {
 
       var context = node.context();
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
       var chatContext = msg.chat();
 
       // check

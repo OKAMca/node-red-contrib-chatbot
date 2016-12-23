@@ -12,7 +12,7 @@ describe('Chat listen node', function() {
     });
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'can you send your curriculum vitae');
+    assert.equal(RED.node.message().chatbot.content, 'can you send your curriculum vitae');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
   });
 
@@ -23,7 +23,7 @@ describe('Chat listen node', function() {
     });
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'can you send your curriculum vitae');
+    assert.equal(RED.node.message().chatbot.content, 'can you send your curriculum vitae');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
   });
 
@@ -45,7 +45,7 @@ describe('Chat listen node', function() {
     RED.environment.chat(msg.originalMessage.chat.id, {authorized: true});
     ListenBlock(RED);
     RED.node.get().emit('input', msg);
-    assert.equal(RED.node.message().payload.content, 'can you send your curriculum vitae to guido.bellomo@gmail.com');
+    assert.equal(RED.node.message().chatbot.content, 'can you send your curriculum vitae to guido.bellomo@gmail.com');
     assert.equal(RED.node.message().originalMessage.chat.id, 42);
     assert.equal(msg.chat().get('email'), 'guido.bellomo@gmail.com');
   });

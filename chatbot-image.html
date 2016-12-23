@@ -41,15 +41,15 @@
 
 <script type="text/x-red" data-help-name="chatbot-image">
 <p>
-  Send image, prepares the payload to send an image to the chat sender using the <code>Buffer</code> as input or
+  Send image, prepares the chatbot to send an image to the chat sender using the <code>Buffer</code> as input or
   loading the file if specified in the node config <em>[Telegram, Facebook, Slack, Smooch]</em>.
 </p>
-<p>The image can be passed through the payload by the upstream node:</p>
+<p>The image can be passed through the chatbot by the upstream node:</p>
 <br/>
 <pre>
-msg.payload = {
+msg.chatbot = {
   caption: 'I am the caption',
-  image: msg.payload // an instance of Buffer
+  image: msg.chatbot // an instance of Buffer
 }
 return msg;
 </pre>

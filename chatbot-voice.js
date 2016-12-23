@@ -15,8 +15,8 @@ module.exports = function(RED) {
       var message = node.message;
       var language = node.language;
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
-      var messageId = msg.payload.messageId || (originalMessage && originalMessage.message_id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
+      var messageId = msg.chatbot.messageId || (originalMessage && originalMessage.message_id);
       var template = MessageTemplate(msg, node);
 
       // check transport compatibility
@@ -27,8 +27,8 @@ module.exports = function(RED) {
 
       if (!_.isEmpty(node.message)) {
         message = node.message;
-      } else if (_.isString(msg.payload) && !_.isEmpty(msg.payload)) {
-        message = msg.payload;
+      } else if (_.isString(msg.chatbot) && !_.isEmpty(msg.chatbot)) {
+        message = msg.chatbot;
       } else {
         node.error('Empty message');
       }
@@ -46,7 +46,7 @@ module.exports = function(RED) {
         if (err) {
           node.error('Error contacting VoiceRSS');
         } else {
-          msg.payload = {
+          msg.chatbot = {
             type: 'audio',
             content: buffer,
             filename: 'audio.mp3',

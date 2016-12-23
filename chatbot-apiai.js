@@ -14,7 +14,7 @@ module.exports = function(RED) {
     this.processMessage = function(msg) {
       msg = RED.util.cloneMessage(msg);
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
       var chatContext = msg.chat();
       var rules = node.rules;
       var outputsNumber = (_.isArray(rules) ? rules.length : 0) + 1;
@@ -24,12 +24,12 @@ module.exports = function(RED) {
 
       // check for string
       var message = null;
-      if (_.isString(msg.payload)) {
-        message = msg.payload;
-      } else if (msg.payload != null && _.isString(msg.payload.content)) {
-        message = msg.payload.content;
+      if (_.isString(msg.chatbot)) {
+        message = msg.chatbot;
+      } else if (msg.chatbot != null && _.isString(msg.chatbot.content)) {
+        message = msg.chatbot.content;
       } else {
-        node.error('A payload of string or chat text message is required as input');
+        node.error('A chatbot of string or chat text message is required as input');
         return;
       }
 
@@ -54,7 +54,7 @@ module.exports = function(RED) {
           chatContext.set('currentConversationNode', node.id);
           chatContext.set('currentConversationNode_at', moment());
           // exit only from the first output
-          msg.payload = response.result.fulfillment.speech;
+          msg.chatbot = response.result.fulfillment.speech;
           output = new Array(outputsNumber);
           output[0] = msg;
         } else {
@@ -71,7 +71,7 @@ module.exports = function(RED) {
           // set the parameters back to the chat context
           chatContext.set(result.parameters);
           // prepare output, only if it matches the context
-          msg.payload = response.result.fulfillment.speech;
+          msg.chatbot = response.result.fulfillment.speech;
           output = new Array();
           output.push(null);
           rules.forEach(function(rule) {

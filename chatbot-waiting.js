@@ -13,7 +13,7 @@ module.exports = function(RED) {
       var node = this;
       var waitingType = this.waitingType;
       var originalMessage = msg.originalMessage;
-      var chatId = msg.payload.chatId || (originalMessage && originalMessage.chat.id);
+      var chatId = msg.chatbot.chatId || (originalMessage && originalMessage.chat.id);
 
       // check transport compatibility
       if (!_.contains(node.transports, msg.originalMessage.transport)) {
@@ -25,7 +25,7 @@ module.exports = function(RED) {
         return;
       }
 
-      msg.payload = {
+      msg.chatbot = {
         type: 'action',
         waitingType: !_.isEmpty(waitingType) ? waitingType : 'typing',
         chatId: chatId,
